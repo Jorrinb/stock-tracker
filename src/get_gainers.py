@@ -1,15 +1,19 @@
-import json
+import requests
+headers={
+    "accept": "application/json",
+    "APCA-API-KEY-ID": "PKFAJUYNZFD6NMBTWAWE",
+    "APCA-API-SECRET-KEY": "PjL6xPoDYsg9o2u3KAEFKQVoFecL9ayVlOoambgT"
+    }
 
 def price_filter(data):
-    hard_price_limit = 20
-    soft_price_limit = 10
-    filtered_stocks=""
+    symbol=[]
     for stock in data:
-        #stocks=json.loads(stock)
-        if stock['price']<= 9:
-            filtered_stocks=filtered_stocks+stock['symbol']+','
-            print(filtered_stocks[:-1])
+        if stock['price']<= 9 and stock['price']<= 1:
+            symbol.append(stock['symbol'])
+    return symbol
 
-    return filtered_stocks[:-1]
+def get_top_movers():
+    response = requests.get("https://data.alpaca.markets/v1beta1/screener/stocks/movers?top=20", headers=headers)
+    movers=response.json()
+    return price_filter(movers['gainers'])
 
-#def get_volume(data):
